@@ -46,15 +46,20 @@
 #
 
 ```
-usage: main.py [-h] [-cfg CONFIG] [-i INCLUDE] [-e EXCLUDE] [-b BLACKLIST] [-ac] [-nc] [-c COOKIES] [-aa ACCOUNT_ALERT] [-a ADDRESS] [-p PROXY] [-pl PROXY_LIST] [-ad] [-tc TG_CONFIG] [-pva PRICE_VALUE_ALERT]    
-               [-pbva PRICE_BONUS_VALUE_ALERT] [-bva BONUS_VALUE_ALERT] [-bpa BONUS_PERCENT_ALERT] [-art ALERT_REPEAT_TIMEOUT] [-t THREADS] [-d DELAY] [-ed ERROR_DELAY] [-log {DEBUG,INFO,WARNING,ERROR,CRITICAL}]
-               [url]
+usage: mmparser [-h] [-job JOB_NAME] [-cfg CONFIG] [-i INCLUDE] [-e EXCLUDE] [-b BLACKLIST] [-ac] [-nc] [-c COOKIES]
+                [-aa ACCOUNT_ALERT] [-a ADDRESS] [-p PROXY] [-pl PROXY_LIST] [-ad] [-tc TG_CONFIG]
+                [-pva PRICE_VALUE_ALERT] [-pbva PRICE_BONUS_VALUE_ALERT] [-bva BONUS_VALUE_ALERT]
+                [-bpa BONUS_PERCENT_ALERT] [-art ALERT_REPEAT_TIMEOUT] [-t THREADS] [-d DELAY] [-ed ERROR_DELAY]
+                [-log {DEBUG,INFO,WARNING,ERROR,CRITICAL}]
+                [url]
 
 positional arguments:
   url                   URL для парсинга
 
 options:
   -h, --help            show this help message and exit
+  -job JOB_NAME, --job-name JOB_NAME
+                        Название задачи, без этого параметра будет автоопределено
   -cfg CONFIG, --config CONFIG
                         Путь к конфигу парсера
   -i INCLUDE, --include INCLUDE
@@ -87,11 +92,12 @@ options:
   -bpa BONUS_PERCENT_ALERT, --bonus-percent-alert BONUS_PERCENT_ALERT
                         Если процент бонусов товара равно или выше данного значения, уведомлять в TG
   -art ALERT_REPEAT_TIMEOUT, --alert-repeat-timeout ALERT_REPEAT_TIMEOUT
-                        Если походящий по параметрам товар уже был отправлен в TG, повторно уведомлять по истечении заданного времени, в часах
+                        Если походящий по параметрам товар уже был отправлен в TG, повторно уведомлять по истечении
+                        заданного времени, в часах
   -t THREADS, --threads THREADS
                         Количество потоков. По умолчанию: 1 на каждое соединиение
   -d DELAY, --delay DELAY
-                        Задержка между запросами в секундах при работе в одном потоке. По умолчанию: 2
+                        Задержка между запросами в секундах при работе в одном потоке. По умолчанию: 1.8
   -ed ERROR_DELAY, --error-delay ERROR_DELAY
                         Задержка между запосами в секундах в случае ошибки при работе в одном потоке. По умолчанию: 5
   -log {DEBUG,INFO,WARNING,ERROR,CRITICAL}, --log-level {DEBUG,INFO,WARNING,ERROR,CRITICAL}
