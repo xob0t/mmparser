@@ -1,0 +1,6 @@
+
+.vscode/settings.json
+.vscode/launch.json
+/core/__pycache__
+*.sqlite
+*.json
