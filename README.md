@@ -1,4 +1,5 @@
 # mmparser
+![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/xob0t/mmparser/total)
 ## Купить
 Парсер открыт, но не бесплатен :)
 Купить - [Yoomoney](https://yoomoney.ru/fundraise/122C5TB8IKI.240412)
@@ -10,7 +11,7 @@
 * Запуск с конфигом и/или аргументами
 * Интерактивное создание конфигов
 * Поддержка прокси строкой или списком из файла
-* Поддержка ссылок каталога, поиска, или карточек товара
+* Поддержка ссылок каталога, поиска, и карточек товара
 * Парсиг одной ссылки в многопотоке, по потоку на прокси/соединение
 * Импорт cookies экспортированних в формате Json с помошью [Cookie-Editor](https://chrome.google.com/webstore/detail/hlkenndednhfkekhgcdicdfddnkalmdm)
 * Блеклист продавцов
@@ -19,9 +20,9 @@
 * Позволяет выставить время, через которое подходящий по параметрам уведомлений товар будет повторно отправлен в TG
 
 ## Установка:
- 1. Уставновить [Python](https://www.python.org/downloads/), перед установкой поставить галочку "Добавить в PATH"
- 2. [Скачать парсер](https://github.com/xob0t/mmparser/releases/latest/download/mmparser.zip)
- 3. Устновить парсер: `pip install mmparser.zip`
+ 1. Уставновить [Python](https://www.python.org/downloads/), в установщике поставить галочку "Добавить в PATH"
+ 2. [Скачать парсер](https://github.com/xob0t/mmparser/releases/latest/)
+ 3. Устновить парсер: `pip install mmparser_vX.X.X.zip`
 
 ## Пример использования
 ### <span style="color:yellow">Кавычки обязательны!</span>
