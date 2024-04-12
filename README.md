@@ -2,7 +2,8 @@
 ![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/xob0t/mmparser/total)
 ## Купить
 Парсер открыт, но не бесплатен :)
-Купить - [Yoomoney](https://yoomoney.ru/fundraise/122C5TB8IKI.240412)
+Купить - [Yoomoney](https://yoomoney.ru/to/410018051351692)
+
 
 ## Особенности
 * Работа через api
