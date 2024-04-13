@@ -12,6 +12,10 @@
 Купить - [Yoomoney](https://yoomoney.ru/to/410018051351692)
 
 ![demo](media/demo.webp)
+<details>
+  <summary>Пример уведомления Telegram</summary>
+  <img src="media/tg_demo.jpg">
+</details>
 
 ## Особенности
 * Работа через api
