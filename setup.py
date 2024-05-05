@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(
     name='mmparser',
-    version='0.5.0',
+    version='0.5.1',
     description='Парсер megamarket.ru',
     author='xob0t',
     url='https://github.com/xob0t/mmparser',

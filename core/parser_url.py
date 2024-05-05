@@ -256,8 +256,8 @@ class Parser_url(Parser_base):
 
     def _parse_item(self, item):
         if item["favoriteOffer"]["merchantName"] in self.blacklist:
-                self.logger.debug("Пропуск %s", item["favoriteOffer"]["merchantName"])
-                return
+            self.logger.debug("Пропуск %s", item["favoriteOffer"]["merchantName"])
+            return
         delivery_possibilities = set()
         for delivery in item["favoriteOffer"]["deliveryPossibilities"]:
             delivery_info = f"{delivery['displayName']}, {delivery.get('displayDeliveryDate', '')} - {delivery.get('amount', 0)}р"
