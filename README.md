@@ -35,8 +35,8 @@
 
 ## Установка:
  1. Уставновить [Python](https://www.python.org/downloads/), в установщике поставить галочку "Добавить в PATH"
- 2. [Скачать парсер](https://github.com/xob0t/mmparser/releases/latest/)
- 3. Устновить парсер: `pip install mmparser_vX.X.X.zip`
+ 2. [Скачать парсер](https://github.com/xob0t/mmparser/releases/latest/download/mmparser.zip)
+ 3. Устновить парсер: `pip install mmparser.zip -U`
 
 ## Пример использования
 ### <span style="color:yellow">Кавычки обязательны!</span>
