@@ -113,7 +113,7 @@ def get_last_notified(goodsId, merchantId, finalPrice, bonusAmount):
     job_tables = [table[0] for table in cursor.fetchall()]
 
     # Construct a union query to select from all job tables at once
-    union_query = " UNION ".join([f"SELECT scraped FROM {table} WHERE notified = 1 AND goodsId = ? AND merchantId = ? AND finalPrice = ? AND bonusAmount = ?" for table in job_tables])
+    union_query = " UNION ".join([f"SELECT scraped FROM '{table}' WHERE notified = 1 AND goodsId = ? AND merchantId = ? AND finalPrice = ? AND bonusAmount = ?" for table in job_tables])
 
     union_query+="ORDER BY scraped DESC LIMIT 1"
 
