@@ -33,6 +33,7 @@ config_dict = {
     "bonus_value_alert": "",
     "bonus_percent_alert": "",
     "alert_repeat_timeout": 0,
+    "use_merchant_blacklist": False,
     "threads": 0,
     "delay": 1.8,
     "error_delay": 5,
@@ -386,6 +387,11 @@ def create_config():
                 config_dict["error_delay"] = num
                 break
             console.print("[red]Неверный ввод![/red]")
+
+    config_dict["use_merchant_blacklist"] = inquirer.confirm(
+        message="Использовать черный список продавцов с ограничением на списание бонусов?",
+        default=False,
+    ).execute()
 
     file_name = save_config_dict(config_dict, config_dict["job_name"])
     console.print("[green]Настройка завершена!")
