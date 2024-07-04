@@ -22,6 +22,7 @@ def run_url_parser(args, config = {}):
         tg_config = config.get('tg_config') or args.tg_config,
         price_value_alert = config.get('price_value_alert') or args.price_value_alert,
         price_bonus_value_alert = config.get('price_bonus_value_alert') or args.price_bonus_value_alert,
+        use_merchant_blacklist = config.get('use_merchant_blacklist') or args.use_merchant_blacklist,
         bonus_value_alert = config.get('bonus_value_alert') or args.bonus_value_alert,
         bonus_percent_alert = config.get('bonus_percent_alert') or args.bonus_percent_alert,
         alert_repeat_timeout = config.get('alert_repeat_timeout') or args.alert_repeat_timeout,
@@ -53,6 +54,7 @@ def main():
     parser.add_argument("-pbva", "--price-bonus-value-alert", type=float, help="Если цена-бонусы товара равна или ниже данного значения, уведомлять в TG")
     parser.add_argument("-bva", "--bonus-value-alert", type=float, help="Если количество бонусов товара равно или выше данного значения, уведомлять в TG")
     parser.add_argument("-bpa", "--bonus-percent-alert", type=float, help="Если процент бонусов товара равно или выше данного значения, уведомлять в TG")
+    parser.add_argument("-mb", "--use-merchant-blacklist", action="store_true", help="Использовать черный список продавцов с ограничением на списание бонусов")
     parser.add_argument("-art", "--alert-repeat-timeout", type=float, help="Если походящий по параметрам товар уже был отправлен в TG, повторно уведомлять по истечении заданного времени, в часах")
     parser.add_argument("-t", "--threads", type=int, help="Количество потоков. По умолчанию: 1 на каждое соединиение")
     parser.add_argument("-d", "--delay", type=float, help="Задержка между запросами в секундах при работе в одном потоке. По умолчанию: 1.8")
