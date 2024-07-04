@@ -1,6 +1,19 @@
 import re
 import json
+import time
+from pathlib import Path
+from dataclasses import dataclass
+from curl_cffi import requests
 from rich.console import Console
+
+BLACKLIST_URL = "https://megamarket.ru/promo/prodavtsy-s-oghranichieniiem-na-spisaniie-bonusov/"
+BLACKLIST_FILE = "merchant_blacklist.json"
+UPDATE_INTERVAL = 86400  # 24 hours
+
+@dataclass
+class MerchantInfo:
+    name: str
+    inn: str
 
 def print_logo():
     console = Console()
@@ -58,3 +71,38 @@ def remove_chars(text):
         if ch in text:
             text = text.replace(ch, '')
     return text
+
+def parse_blacklist_page():
+    response = requests.get(BLACKLIST_URL)
+    html_content = response.text
+
+    content_match = re.search(r'<h1>.*?</div>', html_content, re.DOTALL)
+    if not content_match:
+        raise ValueError("Не удалось найти нужную секцию на странице")
+
+    relevant_content = content_match.group(0)
+
+    merchants = []
+    pattern = r'(\d+\.\s*([^(]+)\s*\([^()]+ИНН\s*(\d+)[^)]*\))'
+    matches = re.findall(pattern, relevant_content)
+
+    for _, name, inn in matches:
+        name = name.strip()
+        inn = inn.strip()
+        if name and inn:
+            merchants.append(MerchantInfo(name=name, inn=inn))
+
+    return merchants
+
+def load_blacklist():
+    if Path(BLACKLIST_FILE).exists():
+        with open(BLACKLIST_FILE, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+            if data['timestamp'] > time.time() - UPDATE_INTERVAL:
+                return [MerchantInfo(**m) for m in data['merchants']]
+
+    merchants = parse_blacklist_page()
+    data = {'timestamp': time.time(), 'merchants': [m.__dict__ for m in merchants]}
+    with open(BLACKLIST_FILE, 'w', encoding='utf-8') as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+    return merchants
