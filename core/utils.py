@@ -1,19 +1,15 @@
+import pathlib
 import re
 import json
 import time
-from pathlib import Path
-from dataclasses import dataclass
+from lxml import html
 from curl_cffi import requests
 from rich.console import Console
 
 BLACKLIST_URL = "https://megamarket.ru/promo/prodavtsy-s-oghranichieniiem-na-spisaniie-bonusov/"
-BLACKLIST_FILE = "merchant_blacklist.json"
+BLACKLIST_FILE = "merchant_blacklist.txt"
 UPDATE_INTERVAL = 86400  # 24 hours
 
-@dataclass
-class MerchantInfo:
-    name: str
-    inn: str
 
 def print_logo():
     console = Console()
@@ -76,33 +72,29 @@ def parse_blacklist_page():
     response = requests.get(BLACKLIST_URL)
     html_content = response.text
 
-    content_match = re.search(r'<h1>.*?</div>', html_content, re.DOTALL)
-    if not content_match:
-        raise ValueError("Не удалось найти нужную секцию на странице")
+    tree = html.fromstring(html_content)
+    paragraphs = tree.xpath('//p/text()')
 
-    relevant_content = content_match.group(0)
+    inns = []
+    for p in paragraphs:
+        if 'ИНН' in p:
+            inn = p.split("ИНН ")[1].strip()[:-1]
+            inns.append(inn)
 
-    merchants = []
-    pattern = r'(\d+\.\s*([^(]+)\s*\([^()]+ИНН\s*(\d+)[^)]*\))'
-    matches = re.findall(pattern, relevant_content)
+    return inns
 
-    for _, name, inn in matches:
-        name = name.strip()
-        inn = inn.strip()
-        if name and inn:
-            merchants.append(MerchantInfo(name=name, inn=inn))
-
-    return merchants
 
 def load_blacklist():
-    if Path(BLACKLIST_FILE).exists():
-        with open(BLACKLIST_FILE, 'r', encoding='utf-8') as f:
-            data = json.load(f)
-            if data['timestamp'] > time.time() - UPDATE_INTERVAL:
-                return [MerchantInfo(**m) for m in data['merchants']]
+    blacklist_path = pathlib.Path(BLACKLIST_FILE)
 
-    merchants = parse_blacklist_page()
-    data = {'timestamp': time.time(), 'merchants': [m.__dict__ for m in merchants]}
-    with open(BLACKLIST_FILE, 'w', encoding='utf-8') as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
-    return merchants
+    if blacklist_path.exists():
+        file_age = time.time() - blacklist_path.stat().st_mtime
+        if file_age < UPDATE_INTERVAL:
+            with open(BLACKLIST_FILE, 'r') as f:
+                return f.read().splitlines()
+
+    inns = parse_blacklist_page()
+    with open(BLACKLIST_FILE, 'w') as f:
+        f.write('\n'.join(inns))
+
+    return inns

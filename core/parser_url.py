@@ -281,7 +281,7 @@ class Parser_url(Parser_base):
 
         if self.use_merchant_blacklist:
             merchant_inn = self._get_merchant_inn(item["favoriteOffer"]["merchantId"])
-            if any(m.name == item["favoriteOffer"]["merchantName"] and m.inn == merchant_inn for m in self.merchant_blacklist):
+            if merchant_inn in self.merchant_blacklist:
                 self.logger.debug("Пропуск %s", item["favoriteOffer"]["merchantName"])
                 return
 
@@ -344,9 +344,10 @@ class Parser_url(Parser_base):
 
             if self.use_merchant_blacklist:
                 merchant_inn = self._get_merchant_inn(offer["merchantId"])
-                if any(m.name == offer["merchantName"] and m.inn == merchant_inn for m in self.merchant_blacklist):
+                if merchant_inn in self.merchant_blacklist:
                     self.logger.debug("Пропуск %s", offer["merchantName"])
                     continue
+
             delivery_possibilities = set()
             for delivery in offer["deliveryPossibilities"]:
                 delivery_info = f"{delivery['displayName']}, {delivery.get('displayDeliveryDate', '')} - {delivery.get('amount', 0)}р"

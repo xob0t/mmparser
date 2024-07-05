@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(
     name='mmparser',
-    version='0.5.2',
+    version='0.5.3',
     description='Парсер megamarket.ru',
     author='xob0t',
     url='https://github.com/xob0t/mmparser',
@@ -11,6 +11,7 @@ setup(
         'rich',
         'curl-cffi',
         'InquirerPy',
+        'lxml',
     ],
     entry_points={
         'console_scripts': ['mmparser = core.main:main']
