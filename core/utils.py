@@ -2,9 +2,14 @@ import pathlib
 import re
 import json
 import time
-from lxml import html
 from curl_cffi import requests
 from rich.console import Console
+try:
+    from lxml import html
+except ImportError:
+    _has_lxml = False
+else:
+    _has_lxml = True
 
 BLACKLIST_URL = "https://megamarket.ru/promo/prodavtsy-s-oghranichieniiem-na-spisaniie-bonusov/"
 BLACKLIST_FILE = "merchant_blacklist.txt"
@@ -72,14 +77,21 @@ def parse_blacklist_page():
     response = requests.get(BLACKLIST_URL)
     html_content = response.text
 
-    tree = html.fromstring(html_content)
-    paragraphs = tree.xpath('//p/text()')
-
     inns = []
-    for p in paragraphs:
-        if 'ИНН' in p:
-            inn = p.split("ИНН ")[1].strip()[:-1]
-            inns.append(inn)
+
+    if _has_lxml:
+        tree = html.fromstring(html_content)
+        paragraphs = tree.xpath('//p/text()')
+        for p in paragraphs:
+            inn_matches = re.findall(r'ИНН\s*(\d+)', p)
+            inns.extend(inn_matches)
+    else:
+        content_match = re.search(r'<h1>.*?</div>', html_content, re.DOTALL)
+        if not content_match:
+            raise ValueError("Не удалось найти нужную секцию на странице")
+        relevant_content = content_match.group(0)
+        inn_matches = re.findall(r'ИНН\s*(\d+)', relevant_content)
+        inns.extend(inn_matches)
 
     return inns
 

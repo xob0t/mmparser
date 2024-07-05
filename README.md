@@ -35,9 +35,9 @@
 * Сссылки на каталог супермаркетов не поддерживаются :(
 
 ## Установка:
- 1. Уставновить [Python](https://www.python.org/downloads/), в установщике поставить галочку "Добавить в PATH"
+ 1. Установить [Python](https://www.python.org/downloads/), в установщике поставить галочку "Добавить в PATH"
  2. [Скачать парсер](https://github.com/xob0t/mmparser/releases/latest/download/mmparser.zip)
- 3. Устновить парсер: `pip install mmparser.zip -U`
+ 3. Установить парсер: `pip install mmparser.zip -U`
 
 ## Пример использования
 ### <span style="color:yellow">Кавычки обязательны!</span>
@@ -107,7 +107,9 @@ options:
   -bpa BONUS_PERCENT_ALERT, --bonus-percent-alert BONUS_PERCENT_ALERT
                         Если процент бонусов товара равно или выше данного значения, уведомлять в TG
   -mb, --use-merchant-blacklist
-                        Использовать черный список продавцов с ограничением на списание бонусов
+                        Использовать черный список продавцов с ограничением на списание бонусов.
+                        Для более эффективной работы рекомендуется установить парсер с поддержкой lxml:
+                        pip install mmparser.zip[lxml] -U
   -art ALERT_REPEAT_TIMEOUT, --alert-repeat-timeout ALERT_REPEAT_TIMEOUT
                         Если походящий по параметрам товар уже был отправлен в TG, повторно уведомлять по истечении
                         заданного времени, в часах

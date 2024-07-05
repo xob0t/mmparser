@@ -11,8 +11,10 @@ setup(
         'rich',
         'curl-cffi',
         'InquirerPy',
-        'lxml',
     ],
+    extras_require={
+        'lxml': ['lxml'],
+    },
     entry_points={
         'console_scripts': ['mmparser = core.main:main']
     },
