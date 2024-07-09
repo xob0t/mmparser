@@ -15,7 +15,7 @@ from rich.progress import (
     TextColumn,
     TimeRemainingColumn,
 )
-from core.utils import validate_regex, slugify
+from core.utils import validate_regex, slugify, load_blacklist
 import core.db as db
 from core.parser_base import Parser_base
 
@@ -35,6 +35,7 @@ class Parser_url(Parser_base):
         address: str = "",
         proxy: str = "",
         allow_direct: bool = False,
+        use_merchant_blacklist: bool = False,
         proxy_file_path: str = "",
         tg_config: str = "",
         price_value_alert: float = None,
@@ -68,6 +69,8 @@ class Parser_url(Parser_base):
         self.address = address
         self.proxy = proxy
         self.account_alert = account_alert
+        self.use_merchant_blacklist = use_merchant_blacklist
+        self.merchant_blacklist = load_blacklist() if use_merchant_blacklist else []
         self.price_value_alert = price_value_alert or float("-inf")
         self.price_bonus_value_alert = price_bonus_value_alert or float("-inf")
         self.bonus_value_alert = bonus_value_alert or float("inf")
@@ -254,10 +257,25 @@ class Parser_url(Parser_base):
         else:
             sys.exit(f"По запросу {self.address} адрес не найден!")
 
+    def _get_merchant_inn(self, merchant_id):
+        json_data = {"merchantId": merchant_id}
+        response_json = self._api_request(
+            "https://megamarket.ru/api/mobile/v1/partnerService/merchant/legalInfo/get",
+            json_data,
+        )
+        return response_json["merchant"]["legalInfo"]["inn"]
+
     def _parse_item(self, item):
         if item["favoriteOffer"]["merchantName"] in self.blacklist:
             self.logger.debug("Пропуск %s", item["favoriteOffer"]["merchantName"])
             return
+
+        if self.use_merchant_blacklist:
+            merchant_inn = self._get_merchant_inn(item["favoriteOffer"]["merchantId"])
+            if merchant_inn in self.merchant_blacklist:
+                self.logger.debug("Пропуск %s", item["favoriteOffer"]["merchantName"])
+                return
+
         delivery_possibilities = set()
         for delivery in item["favoriteOffer"]["deliveryPossibilities"]:
             delivery_info = f"{delivery['displayName']}, {delivery.get('displayDeliveryDate', '')} - {delivery.get('amount', 0)}р"
@@ -314,6 +332,13 @@ class Parser_url(Parser_base):
             if offer["merchantName"] in self.blacklist:
                 self.logger.debug("Пропуск %s", offer["merchantName"])
                 continue
+
+            if self.use_merchant_blacklist:
+                merchant_inn = self._get_merchant_inn(offer["merchantId"])
+                if merchant_inn in self.merchant_blacklist:
+                    self.logger.debug("Пропуск %s", offer["merchantName"])
+                    continue
+
             delivery_possibilities = set()
             for delivery in offer["deliveryPossibilities"]:
                 delivery_info = f"{delivery['displayName']}, {delivery.get('displayDeliveryDate', '')} - {delivery.get('amount', 0)}р"

@@ -31,19 +31,20 @@
 * Regex фильтр по именам товаров
 * Уведомления в телеграм по заданным параметрам
 * Позволяет выставить время, через которое подходящий по параметрам уведомлений товар будет повторно отправлен в TG
+* Использование блеклиста продавцов с ограничением на списание бонусов
 * Сссылки на каталог супермаркетов не поддерживаются :(
 
 ## Установка:
- 1. Уставновить [Python](https://www.python.org/downloads/), в установщике поставить галочку "Добавить в PATH"
+ 1. Установить [Python](https://www.python.org/downloads/), в установщике поставить галочку "Добавить в PATH"
  2. [Скачать парсер](https://github.com/xob0t/mmparser/releases/latest/download/mmparser.zip)
- 3. Устновить парсер: `pip install mmparser.zip -U`
+ 3. Установить парсер: `pip install mmparser.zip -U`
 
 ## Пример использования
 ### <span style="color:yellow">Кавычки обязательны!</span>
 ### Просто парсинг url
 `mmparser "https://megamarket.ru/catalog/?q=%D0%BD%D0%BE%D1%83%D1%82%D0%B1%D1%83%D0%BA&suggestionType=frequent_query#?filters=%7B%2288C83F68482F447C9F4E401955196697%22%3A%7B%22min%22%3A229028%2C%22max%22%3A307480%7D%2C%22A03364050801C25CD0A856C734F74FE9%22%3A%5B%221%22%5D%7D&sort=1"`
 ### Парсинг url с cookie файлом
-`mmparser "https://megamarket.ru/catalog/details/processor-amd-ryzen-5-5600-am4-oem-600008773764/" -cookies "cookies.json"`
+`mmparser -cookies "cookies.json" "https://megamarket.ru/catalog/details/processor-amd-ryzen-5-5600-am4-oem-600008773764/"`
 ### Без аргументов, создание конфига
 `mmparser`
 ### Запуск с конфигом
@@ -63,7 +64,7 @@
 usage: mmparser [-h] [-job JOB_NAME] [-cfg CONFIG] [-i INCLUDE] [-e EXCLUDE] [-b BLACKLIST] [-ac] [-nc] [-c COOKIES]
                 [-aa ACCOUNT_ALERT] [-a ADDRESS] [-p PROXY] [-pl PROXY_LIST] [-ad] [-tc TG_CONFIG]
                 [-pva PRICE_VALUE_ALERT] [-pbva PRICE_BONUS_VALUE_ALERT] [-bva BONUS_VALUE_ALERT]
-                [-bpa BONUS_PERCENT_ALERT] [-art ALERT_REPEAT_TIMEOUT] [-t THREADS] [-d DELAY] [-ed ERROR_DELAY]
+                [-bpa BONUS_PERCENT_ALERT] [-mb] [-art ALERT_REPEAT_TIMEOUT] [-t THREADS] [-d DELAY] [-ed ERROR_DELAY]
                 [-log {DEBUG,INFO,WARNING,ERROR,CRITICAL}]
                 [url]
 
@@ -105,6 +106,10 @@ options:
                         Если количество бонусов товара равно или выше данного значения, уведомлять в TG
   -bpa BONUS_PERCENT_ALERT, --bonus-percent-alert BONUS_PERCENT_ALERT
                         Если процент бонусов товара равно или выше данного значения, уведомлять в TG
+  -mb, --use-merchant-blacklist
+                        Использовать черный список продавцов с ограничением на списание бонусов.
+                        Для более эффективной работы рекомендуется установить парсер с поддержкой lxml:
+                        pip install mmparser.zip[lxml] -U
   -art ALERT_REPEAT_TIMEOUT, --alert-repeat-timeout ALERT_REPEAT_TIMEOUT
                         Если походящий по параметрам товар уже был отправлен в TG, повторно уведомлять по истечении
                         заданного времени, в часах

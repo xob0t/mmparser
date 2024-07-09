@@ -4,3 +4,4 @@
 /core/__pycache__
 *.sqlite
 *.json
+*.txt
