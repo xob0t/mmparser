@@ -258,16 +258,7 @@ class Parser_url(Parser_base):
             sys.exit(f"По запросу {self.address} адрес не найден!")
 
     def _get_merchant_inn(self, merchant_id):
-        json_data = {
-            "merchantId": merchant_id,
-            "auth": {
-                "locationId": self.region_id,
-                "appPlatform": "WEB",
-                "appVersion": 1710405202,
-                "experiments": {},
-                "os": "UNKNOWN_OS",
-            },
-        }
+        json_data = {"merchantId": merchant_id}
         response_json = self._api_request(
             "https://megamarket.ru/api/mobile/v1/partnerService/merchant/legalInfo/get",
             json_data,
