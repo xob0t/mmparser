@@ -25,7 +25,7 @@ def print_logo():
     console.print("[blue bold]                         /_/\n")
 
     console.print("[white] Домашняя страница https://github.com/xob0t/mmparser")
-    console.print("[green bold] ❤️  Сказать спасибо автору: https://github.com/xob0t/mmparser#купить")
+    console.print("[green bold] ❤️ Сказать спасибо автору: https://yoomoney.ru/to/410018051351692")
     console.print("")
 
 def slugify(text):
