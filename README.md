@@ -7,11 +7,11 @@
                          /_/
 ```
 ![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/xob0t/mmparser/total)
-## Купить
-Парсер открыт, но не бесплатен :)
-Купить - [Yoomoney](https://yoomoney.ru/to/410018051351692)
+## Сказать спасибо автору - [Yoomoney](https://yoomoney.ru/to/410018051351692)
 
-![demo](media/demo.webp)
+### Демо ускорено в 10 раз
+
+<script src="https://asciinema.org/a/fYFj0HVO16r16vaK1reEa4617.js" id="asciicast-fYFj0HVO16r16vaK1reEa4617" async="true"></script>
 <details>
   <summary>Пример уведомления Telegram</summary>
   <img src="media/tg_demo.jpg">
