@@ -166,7 +166,7 @@ class Parser_base:
 
     def _create_session(self):
         headers = {
-            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
             "accept": "application/json",
             "sec-fetch-site": "same-origin",
             "sec-fetch-mode": "cors",
@@ -183,6 +183,7 @@ class Parser_base:
         self.session.cookies.update(self.cookie_dict)
         self.session.headers = headers
         self.session.headers["Connection"] = "keep-alive"
+        self.session.impersonate = "chrome123"
 
     def _get_profile(self):
         json_data = {}
