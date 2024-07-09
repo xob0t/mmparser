@@ -93,6 +93,7 @@ def parse_blacklist_page():
         inn_matches = re.findall(r'ИНН\s*(\d+)', relevant_content)
         inns.extend(inn_matches)
 
+    inns = set(inns)
     return inns
 
 
