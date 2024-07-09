@@ -11,7 +11,7 @@
 
 ### Демо ускорено в 10 раз
 
-<script src="https://asciinema.org/a/fYFj0HVO16r16vaK1reEa4617.js" id="asciicast-fYFj0HVO16r16vaK1reEa4617" async="true"></script>
+[![asciicast](https://asciinema.org/a/fYFj0HVO16r16vaK1reEa4617.svg)](https://asciinema.org/a/fYFj0HVO16r16vaK1reEa4617)
 <details>
   <summary>Пример уведомления Telegram</summary>
   <img src="media/tg_demo.jpg">
