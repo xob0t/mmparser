@@ -42,13 +42,21 @@
 ## Пример использования
 ### <span style="color:yellow">Кавычки обязательны!</span>
 ### Просто парсинг url
-`mmparser "https://megamarket.ru/catalog/?q=%D0%BD%D0%BE%D1%83%D1%82%D0%B1%D1%83%D0%BA&suggestionType=frequent_query#?filters=%7B%2288C83F68482F447C9F4E401955196697%22%3A%7B%22min%22%3A229028%2C%22max%22%3A307480%7D%2C%22A03364050801C25CD0A856C734F74FE9%22%3A%5B%221%22%5D%7D&sort=1"`
+```
+mmparser "https://megamarket.ru/catalog/?q=%D0%BD%D0%BE%D1%83%D1%82%D0%B1%D1%83%D0%BA&suggestionType=frequent_query#?filters=%7B%2288C83F68482F447C9F4E401955196697%22%3A%7B%22min%22%3A229028%2C%22max%22%3A307480%7D%2C%22A03364050801C25CD0A856C734F74FE9%22%3A%5B%221%22%5D%7D&sort=1"
+```
 ### Парсинг url с cookie файлом
-`mmparser -cookies "cookies.json" "https://megamarket.ru/catalog/details/processor-amd-ryzen-5-5600-am4-oem-600008773764/"`
+```
+mmparser -cookies "cookies.json" "https://megamarket.ru/catalog/details/processor-amd-ryzen-5-5600-am4-oem-600008773764/"
+```
 ### Без аргументов, создание конфига
-`mmparser`
+```
+mmparser
+```
 ### Запуск с конфигом
-`mmparser -cfg "config.json"`
+```
+mmparser -cfg "config.json"
+```
 
 ## Чтение результатов
 При запуске парсер создаст в рабочей директории файл storage.sqlite
