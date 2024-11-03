@@ -8,6 +8,7 @@
 ```
 ![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/xob0t/mmparser/total)
 ## Сказать спасибо автору - [Yoomoney](https://yoomoney.ru/to/410018051351692)
+Связь со мной [tg](https://t.me/mobate)
 
 ### Демо ускорено в 10 раз
 
