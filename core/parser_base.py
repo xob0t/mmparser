@@ -134,6 +134,8 @@ class Parser_base:
             proxy: self.Proxy = self._get_proxy()
             proxy.busy = True
             self.logger.debug("Прокси : %s", proxy.proxy_string)
+            # костыль, без очистки cookies мм начинает выдавать ошибку
+            self.session.cookies.clear()
             try:
                 response = self.session.post(
                     api_url, json=json_data, proxy=proxy.proxy_string, verify=False
