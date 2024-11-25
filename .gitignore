@@ -6,3 +6,4 @@
 *.json
 *.txt
 /mmparser.egg-info
+/tests/__pycache__
