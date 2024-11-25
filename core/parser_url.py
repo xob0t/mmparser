@@ -344,14 +344,14 @@ class Parser_url(Parser_base):
                 delivery_info = f"{delivery['displayName']}, {delivery.get('displayDeliveryDate', '')} - {delivery.get('amount', 0)}р"
                 delivery_possibilities.add(delivery_info)
             delivery_possibilities = (" \n").join(delivery_possibilities)
-            price_bonus = offer["finalPrice"] - offer["bonusAmount"]
+            price_bonus = offer["finalPrice"] - offer["bonusAmountFinalPrice"]
             self.scraped_tems_counter += 1
             goodsId = item["goodsId"].split("_")[0]
             notified = self._notify_if_notify_check(
                 item["title"],
                 offer["finalPrice"],
                 price_bonus,
-                offer["bonusAmount"],
+                offer["bonusAmountFinalPrice"],
                 offer["bonusPercent"],
                 item["webUrl"],
                 offer["merchantName"],
@@ -368,7 +368,7 @@ class Parser_url(Parser_base):
                 item["title"],
                 offer["finalPrice"],
                 price_bonus,
-                offer["bonusAmount"],
+                offer["bonusAmountFinalPrice"],
                 offer["bonusPercent"],
                 offer["availableQuantity"],
                 delivery_possibilities,
