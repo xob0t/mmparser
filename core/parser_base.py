@@ -30,7 +30,7 @@ class Parser_base:
         self.proxy_file_path = proxy_file_path
         self.tg_config = tg_config
         self.connection_success_delay = delay or 1.8
-        self.connection_error_delay = error_delay or 5.0
+        self.connection_error_delay = error_delay or 10.0
         self.log_level = log_level
 
         self.start_time = datetime.now()
@@ -57,7 +57,6 @@ class Parser_base:
         self._read_proxy_file() if self.proxy_file_path else None
         self._proxies_set_up()
         self._read_cookie_file() if self.cookie_file_path else None
-        self._create_session()
 
     class Proxy:
         def __init__(self, proxy: str | None):
@@ -120,9 +119,7 @@ class Parser_base:
                 # No free proxies, wait and retry
                 sleep(1)
 
-    def _api_request(
-        self, api_url: str, json_data: dict, tries: int = 10, delay: float = 0
-    ) -> dict:
+    def _api_request(self, api_url: str, json_data: dict, tries: int = 10, delay: float = 0) -> dict:
         json_data["auth"] = {
             "locationId": self.region_id,
             "appPlatform": "WEB",
@@ -134,31 +131,17 @@ class Parser_base:
             proxy: self.Proxy = self._get_proxy()
             proxy.busy = True
             self.logger.debug("Прокси : %s", proxy.proxy_string)
-            # костыль, без очистки cookies мм начинает выдавать ошибку
-            self.session.cookies.clear()
             try:
-                response = self.session.post(
-                    api_url, json=json_data, proxy=proxy.proxy_string, verify=False
-                )
+                response = requests.post(api_url, json=json_data, proxy=proxy.proxy_string, verify=False, impersonate="chrome")
                 response_data: dict = response.json()
             except:
                 response = None
-            if (
-                response
-                and response.status_code == 200
-                and not response_data.get("error")
-            ):
+            if response and response.status_code == 200 and not response_data.get("error"):
                 proxy.usable_at = time() + delay
                 proxy.busy = False
                 return response_data
-            if (
-                response
-                and response.status_code == 200
-                and response_data.get("code") == 7
-            ):
-                self.logger.debug(
-                    "Соединение %s: слишком частые запросы", proxy.proxy_string
-                )
+            if response and response.status_code == 200 and response_data.get("code") == 7:
+                self.logger.debug("Соединение %s: слишком частые запросы", proxy.proxy_string)
                 proxy.usable_at = time() + self.connection_error_delay
             else:
                 sleep(1 * i)
@@ -166,30 +149,7 @@ class Parser_base:
 
         raise Exception("Ошибка получения данных api")
 
-    def _create_session(self):
-        headers = {
-            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
-            "accept": "application/json",
-            "sec-fetch-site": "same-origin",
-            "sec-fetch-mode": "cors",
-            "Sec-Fetch-User": "?1",
-            "sec-fetch-dest": "empty",
-            "accept-language": "en",
-            "authority": "megamarket.ru",
-            "Content-Type": "application/json",
-            "origin": "https://megamarket.ru",
-            "referer": "https://megamarket.ru/",
-            "x-requested-with": "XMLHttpRequest",
-        }
-        self.session = requests.Session()
-        self.session.cookies.update(self.cookie_dict)
-        self.session.headers = headers
-        self.session.headers["Connection"] = "keep-alive"
-        self.session.impersonate = "chrome123"
-
     def _get_profile(self):
         json_data = {}
-        response_json = self._api_request(
-            "https://megamarket.ru/api/mobile/v1/securityService/profile/get", json_data
-        )
+        response_json = self._api_request("https://megamarket.ru/api/mobile/v1/securityService/profile/get", json_data)
         self.profile = response_json["profile"]
