@@ -2,15 +2,17 @@ from setuptools import find_packages, setup
 
 setup(
     name="mmparser",
-    version="0.6.6",
+    version="0.9.5",
     description="Парсер megamarket.ru",
     author="xob0t",
     url="https://github.com/xob0t/mmparser",
     packages=find_packages(),
     install_requires=[
         "rich",
+        "rich-argparse",
         "curl-cffi",
         "InquirerPy",
+        "packaging",
     ],
     extras_require={
         "lxml": ["lxml"],

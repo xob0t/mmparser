@@ -30,24 +30,24 @@ def new_job(job_name):
         """INSERT INTO 
         jobs
         (name,started) VALUES (?,?)""",
-        (job_name,
-        now)
+        (job_name, now),
     )
     job_id = cursor.lastrowid
     cursor.execute(f"""
         CREATE TABLE "{job_name}_{job_id}" (
-            "goodsId"               TEXT,
-            "merchantId"            TEXT,
+            "goods_id"              TEXT,
+            "merchant_id"           TEXT,
             "url"	                TEXT,
             "title"                 TEXT,
-            "finalPrice"	        INTEGER,
-            "finalPriceBonus"       INTEGER,
-            "bonusAmount"	        INTEGER,
-            "bonusPercent"	        INTEGER,
-            "availableQuantity"     INTEGER,
-            "deliveryPossibilities" TEXT,
-            "merchantName"          TEXT,
-            "scraped"	            DATETIME,
+            "price"	                INTEGER,
+            "price_bonus"           INTEGER,
+            "bonus_amount"	        INTEGER,
+            "bonus_percent"	        INTEGER,
+            "available_quantity"    INTEGER,
+            "delivery_date"         TEXT,
+            "merchant_name"         TEXT,
+            "merchant_rating"       FLOAT,
+            "scraped_at"	        DATETIME,
             "notified"              BOOL
         );
     """)
@@ -58,17 +58,18 @@ def new_job(job_name):
 def add_to_db(
     job_id,
     job_name,
-    goodsId,
-    merchantId,
+    goods_id,
+    merchant_id,
     url,
     title,
-    finalPrice,
-    finalPriceBonus,
-    bonusAmount,
-    bonusPercent,
-    availableQuantity,
-    deliveryPossibilities,
-    merchantName,
+    price,
+    price_bonus,
+    bonus_amount,
+    bonus_percent,
+    available_quantity,
+    delivery_date,
+    merchant_name,
+    merchant_rating,
     notified,
 ):
     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -77,22 +78,23 @@ def add_to_db(
     cursor.execute(
         f"""INSERT INTO 
         "{job_name}_{job_id}"
-        (goodsId,merchantId,url,title,finalPrice,finalPriceBonus,bonusAmount,
-        bonusPercent,availableQuantity,deliveryPossibilities,
-        merchantName,scraped,notified)
-        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+        (goods_id,merchant_id,url,title,price,price_bonus,bonus_amount,
+        bonus_percent,available_quantity,delivery_date,
+        merchant_name,merchant_rating,scraped_at,notified)
+        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
         (
-            goodsId,
-            merchantId,
+            goods_id,
+            merchant_id,
             url,
             title,
-            finalPrice,
-            finalPriceBonus,
-            bonusAmount,
-            bonusPercent,
-            availableQuantity,
-            deliveryPossibilities,
-            merchantName,
+            price,
+            price_bonus,
+            bonus_amount,
+            bonus_percent,
+            available_quantity,
+            delivery_date,
+            merchant_name,
+            merchant_rating,
             now,
             notified,
         ),
@@ -100,7 +102,7 @@ def add_to_db(
     sqlite_connection.commit()
 
 
-def get_last_notified(goodsId, merchantId, finalPrice, bonusAmount):
+def get_last_notified(goods_id, merchant_id, price, bonus_amount):
     sqlite_connection = sqlite3.connect(FILENAME)
     cursor = sqlite_connection.cursor()
     last_notified_row = None
@@ -113,12 +115,12 @@ def get_last_notified(goodsId, merchantId, finalPrice, bonusAmount):
     job_tables = [table[0] for table in cursor.fetchall()]
 
     # Construct a union query to select from all job tables at once
-    union_query = " UNION ".join([f"SELECT scraped FROM '{table}' WHERE notified = 1 AND goodsId = ? AND merchantId = ? AND finalPrice = ? AND bonusAmount = ?" for table in job_tables])
+    union_query = " UNION ".join([f"SELECT scraped FROM '{table}' WHERE notified = 1 AND goods_id = ? AND merchant_id = ? AND price = ? AND bonus_amount = ?" for table in job_tables])
 
-    union_query+="ORDER BY scraped DESC LIMIT 1"
+    union_query += "ORDER BY scraped DESC LIMIT 1"
 
     # Concatenate all parameters to be passed into the execute function
-    parameters = tuple([goodsId, merchantId, finalPrice, bonusAmount] * len(job_tables))
+    parameters = tuple([goods_id, merchant_id, price, bonus_amount] * len(job_tables))
 
     cursor.execute(union_query, parameters)
     row = cursor.fetchone()
@@ -127,6 +129,7 @@ def get_last_notified(goodsId, merchantId, finalPrice, bonusAmount):
 
     cursor.close()
     return last_notified_row
+
 
 def finish_job(job_id):
     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
