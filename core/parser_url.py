@@ -3,8 +3,6 @@
 import logging
 from datetime import datetime
 from time import sleep, time
-from dataclasses import dataclass, field
-from typing import Optional
 import threading
 import concurrent.futures
 import sys
@@ -17,41 +15,10 @@ from rich.progress import BarColumn, Progress, SpinnerColumn, TextColumn, TimeRe
 from rich.logging import RichHandler
 from curl_cffi import requests
 
+from .models import ParsedOffer, Connection
 from .exceptions import ConfigError, ApiError
 from . import db_utils, utils
 from .telegram import TelegramClient, validate_tg_credentials
-
-
-@dataclass
-class ParsedOffer:
-    title: str
-    url: str
-    image_url: str
-    price: float
-    price_bonus: int
-    bonus_amount: int
-    available_quantity: int
-    goods_id: str
-    delivery_date: datetime
-    merchant_id: str
-    merchant_name: str
-    merchant_rating: Optional[bool] = field(default=None)
-    notified: Optional[bool] = field(default=None)
-    scraped: Optional[datetime] = field(default=None)
-
-    @property
-    def bonus_percent(self) -> int:
-        """Рассичать процент бонусов от цены"""
-        if self.price == 0:
-            return 0
-        return int((self.bonus_amount / self.price) * 100)
-
-
-class Connection:
-    def __init__(self, proxy: str | None):
-        self.proxy_string: str | None = proxy
-        self.usable_at: int = 0
-        self.busy = False
 
 
 class Parser_url:
