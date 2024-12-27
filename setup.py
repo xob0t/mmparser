@@ -8,6 +8,7 @@ setup(
     url="https://github.com/xob0t/mmparser",
     packages=find_packages(),
     install_requires=[
+        "setuptools",
         "rich",
         "rich-argparse",
         "curl-cffi",
