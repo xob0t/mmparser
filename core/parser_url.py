@@ -503,9 +503,12 @@ class Parser_url:
         if response_json.get("success") is True:
             return response_json
 
-    def _parse_page(self, response_json: dict) -> tuple[int, int, bool]:
+    def _parse_page(self, response_json: dict) -> bool:
         """Парсинг страницы каталога или поиска"""
         items_per_page = int(response_json.get("limit"))
+        if items_per_page == 0:
+            # костыль для косяка мм
+            return False
         page_progress = self.rich_progress.add_task(f"[orange]Страница {int(int(response_json.get('offset'))/items_per_page)+1}")
         self.rich_progress.update(page_progress, total=len(response_json["items"]))
         for item in response_json["items"]:
