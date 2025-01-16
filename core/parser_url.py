@@ -396,7 +396,7 @@ class Parser_url:
         offer_url: str = item["webUrl"]
         if offer_url.endswith("/"):
             offer_url = offer_url[:-1]
-        offer_url = f'{offer_url}_{offer["merchantId"]}'
+        offer_url = f"{offer_url}_{offer['merchantId']}"
 
         parsed_offer = ParsedOffer(
             delivery_date=delivery_date,
@@ -441,7 +441,7 @@ class Parser_url:
     def _format_tg_message(self, parsed_offer: ParsedOffer) -> str:
         """Форматировать данные для отправки в telegram"""
         return (
-            f"🛍 <b>Товар:</b> <a href=\"{parsed_offer.url}\">{parsed_offer.title}</a>\n"
+            f'🛍 <b>Товар:</b> <a href="{parsed_offer.url}">{parsed_offer.title}</a>\n'
             f"💰 <b>Цена:</b> {parsed_offer.price}₽\n"
             f"💸 <b>Цена-Бонусы:</b> {parsed_offer.price_bonus}\n"
             f"🟢 <b>Бонусы:</b> {parsed_offer.bonus_amount}\n"
@@ -509,7 +509,7 @@ class Parser_url:
         if items_per_page == 0:
             # костыль для косяка мм
             return False
-        page_progress = self.rich_progress.add_task(f"[orange]Страница {int(int(response_json.get('offset'))/items_per_page)+1}")
+        page_progress = self.rich_progress.add_task(f"[orange]Страница {int(int(response_json.get('offset')) / items_per_page) + 1}")
         self.rich_progress.update(page_progress, total=len(response_json["items"]))
         for item in response_json["items"]:
             item_title = item["goods"]["title"]
