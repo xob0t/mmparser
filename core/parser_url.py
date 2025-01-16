@@ -156,7 +156,7 @@ class Parser_url:
             proxy.busy = True
             self.logger.debug("Прокси : %s", proxy.proxy_string)
             try:
-                response = requests.post(api_url, json=json_data, proxy=proxy.proxy_string, verify=False, impersonate="chrome")
+                response = requests.post(api_url, json=json_data, proxy=proxy.proxy_string, verify=False, impersonate="chrome120")
                 response_data: dict = response.json()
             except Exception:
                 response = None
