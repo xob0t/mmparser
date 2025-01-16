@@ -88,14 +88,17 @@ mmparser -config "config.json"
 #
 
 ```
-mmparser [-h] [-job-name JOB_NAME] [-config CONFIG] [-include INCLUDE] [-exclude EXCLUDE] [-blacklist BLACKLIST] [-all-cards] [-no-cards] [-cookies COOKIES] [-account-alert ACCOUNT_ALERT] [-address ADDRESS] [-proxy PROXY] [-proxy-list PROXY_LIST] [-allow-direct] [-tg-config TG_CONFIG] [-price-value-alert PRICE_VALUE_ALERT]
-                [-price-bonus-value-alert PRICE_BONUS_VALUE_ALERT] [-bonus-value-alert BONUS_VALUE_ALERT] [-bonus-percent-alert BONUS_PERCENT_ALERT] [-use-merchant-blacklist] [-alert-repeat-timeout ALERT_REPEAT_TIMEOUT] [-threads THREADS] [-delay DELAY] [-error-delay ERROR_DELAY] [-log-level {DEBUG,INFO,WARNING,ERROR,CRITICAL}]
+mmparser [-h] [-job-name JOB_NAME] [-config CONFIG] [-include INCLUDE] [-exclude EXCLUDE] [-blacklist BLACKLIST] [-all-cards] [-no-cards] [-cookies COOKIES] [-account-alert ACCOUNT_ALERT] [-address ADDRESS] [-proxy PROXY] [-proxy-list PROXY_LIST] [-allow-direct] [-tg-config TG_CONFIG]
+                [-price-value-alert PRICE_VALUE_ALERT] [-price-bonus-value-alert PRICE_BONUS_VALUE_ALERT] [-bonus-value-alert BONUS_VALUE_ALERT] [-bonus-percent-alert BONUS_PERCENT_ALERT] [-use-merchant-blacklist] [-alert-repeat-timeout ALERT_REPEAT_TIMEOUT] [-threads THREADS] [-no-db] [-delay DELAY]
+                [-error-delay ERROR_DELAY] [-log-level {DEBUG,INFO,WARNING,ERROR,CRITICAL}]
                 [url]
 
-positional arguments:
+Парсер/скрапер megamarket.ru
+
+Positional Arguments:
   url                   URL для парсинга
 
-options:
+Options:
   -h, --help            show this help message and exit
   -job-name JOB_NAME    Название задачи, без этого параметра будет автоопределено
   -config CONFIG        Путь к конфигу парсера
@@ -126,6 +129,7 @@ options:
   -alert-repeat-timeout ALERT_REPEAT_TIMEOUT
                         Если походящий по параметрам товар уже был отправлен в TG, повторно уведомлять по истечении заданного времени, в часах
   -threads THREADS      Количество потоков. По умолчанию: 1 на каждое соединиение
+  -no-db                Не сохранять результаты парсинга в storage.sqlite
   -delay DELAY          Задержка между запросами в секундах при работе в одном потоке. По умолчанию: 1.8
   -error-delay ERROR_DELAY
                         Задержка между запосами в секундах в случае ошибки при работе в одном потоке. По умолчанию: 5

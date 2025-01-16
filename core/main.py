@@ -29,6 +29,7 @@ def run_url_parser(args: argparse.Namespace, config: dict = {}) -> None:
         bonus_value_alert=config.get("bonus_value_alert") or args.bonus_value_alert,
         bonus_percent_alert=config.get("bonus_percent_alert") or args.bonus_percent_alert,
         alert_repeat_timeout=config.get("alert_repeat_timeout") or args.alert_repeat_timeout,
+        no_db=config.get("no_db") or args.no_db,
         use_merchant_blacklist=config.get("use_merchant_blacklist") or args.use_merchant_blacklist,
         threads=config.get("threads") or args.threads,
         delay=config.get("delay") or args.delay,
@@ -62,6 +63,7 @@ def main():
     parser.add_argument("-use-merchant-blacklist", action="store_true", help="Использовать черный список продавцов с ограничением на списание бонусов")
     parser.add_argument("-alert-repeat-timeout", type=float, help="Если походящий по параметрам товар уже был отправлен в TG, повторно уведомлять по истечении заданного времени, в часах")
     parser.add_argument("-threads", type=int, help="Количество потоков. По умолчанию: 1 на каждое соединиение")
+    parser.add_argument("-no-db", action="store_true", help="Не сохранять результаты парсинга в storage.sqlite")
     parser.add_argument("-delay", type=float, help="Задержка между запросами в секундах при работе в одном потоке. По умолчанию: 1.8")
     parser.add_argument("-error-delay", type=float, help="Задержка между запосами в секундах в случае ошибки при работе в одном потоке. По умолчанию: 5")
     parser.add_argument("-log-level", choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"], default="INFO", help="Уровень лога. По умолчанию: INFO")

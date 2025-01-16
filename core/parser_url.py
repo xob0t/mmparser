@@ -44,6 +44,7 @@ class Parser_url:
         bonus_value_alert: float = None,
         bonus_percent_alert: float = None,
         alert_repeat_timeout: float = None,
+        no_db: bool = False,
         threads: int = None,
         delay: float = None,
         error_delay: float = None,
@@ -89,6 +90,7 @@ class Parser_url:
         self.bonus_value_alert: float = bonus_value_alert or float("inf")
         self.bonus_percent_alert: float = bonus_percent_alert or float("inf")
         self.alert_repeat_timeout: float = alert_repeat_timeout or 0
+        self.no_db: bool = no_db
         self.threads: int = threads
 
         self.blacklist: list = []
@@ -200,7 +202,7 @@ class Parser_url:
         if self.blacklist_path:
             self._read_blacklist_file()
         self.threads = self.threads or len(self.connections)
-        if not Path(db_utils.FILENAME).exists():
+        if not Path(db_utils.FILENAME).exists() and not self.no_db:
             db_utils.create_db()
 
     def parse(self) -> None:
@@ -236,11 +238,13 @@ class Parser_url:
             self._parse_card()
             self.logger.info("%s %s", self.job_name, self.start_time.strftime("%d-%m-%Y %H:%M:%S"))
         else:
-            self.job_id = db_utils.new_job(self.job_name)
+            if not self.no_db:
+                self.job_id = db_utils.new_job(self.job_name)
             self.logger.info("%s %s", self.job_name, self.start_time.strftime("%d-%m-%Y %H:%M:%S"))
             self._parse_multi_page()
             self.logger.info("Спаршено %s товаров", self.scraped_tems_counter)
-        db_utils.finish_job(self.job_id)
+        if not self.no_db:
+            db_utils.finish_job(self.job_id)
 
     def _read_blacklist_file(self):
         blacklist_file_contents: str = open(self.blacklist_path, "r", encoding="utf-8").read()
@@ -364,7 +368,8 @@ class Parser_url:
         )
 
         parsed_offer.notified = self._notify_if_notify_check(parsed_offer)
-        self._export_to_db(parsed_offer)
+        if not self.no_db:
+            self._export_to_db(parsed_offer)
 
     def _filters_convert(self, parsed_url: dict) -> dict:
         """Конвертация фильтров каталога или поиска"""
@@ -415,14 +420,16 @@ class Parser_url:
 
         self.scraped_tems_counter += 1
         parsed_offer.notified = self._notify_if_notify_check(parsed_offer)
-        self._export_to_db(parsed_offer)
+        if not self.no_db:
+            self._export_to_db(parsed_offer)
 
     def _notify_if_notify_check(self, parsed_offer: ParsedOffer):
         """Отправить уведомление в tg если предложение подходит по параметрам"""
         time_diff = 0
         last_notified = None
         if self.alert_repeat_timeout:
-            last_notified = db_utils.get_last_notified(parsed_offer.goods_id, parsed_offer.merchant_id, parsed_offer.price, parsed_offer.bonus_amount)
+            if not self.no_db:
+                last_notified = db_utils.get_last_notified(parsed_offer.goods_id, parsed_offer.merchant_id, parsed_offer.price, parsed_offer.bonus_amount)
             last_notified = datetime.strptime(last_notified, "%Y-%m-%d %H:%M:%S") if last_notified else None
             if last_notified:
                 now = datetime.now()
@@ -563,7 +570,8 @@ class Parser_url:
         item = self._get_card_info(self.parsed_url["goods"]["goodsId"])
         offers = self._get_offers(self.parsed_url["goods"]["goodsId"])
         self.job_name = utils.slugify(item["title"])
-        self.job_id = db_utils.new_job(self.job_name)
+        if not self.no_db:
+            self.job_id = db_utils.new_job(self.job_name)
         for offer in offers:
             self._parse_offer(item, offer)
 

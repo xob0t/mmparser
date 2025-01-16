@@ -303,6 +303,14 @@ def get_account_alert_config(config_dict: dict) -> None:
         ).execute()
 
 
+def get_db_config(config_dict: dict) -> None:
+    """Получить конфигурацию сохранения результатов в DB"""
+    config_dict["no_db"] = inquirer.confirm(
+        message="Сохранять результаты парсинга в базу данных?",
+        default=True,
+    ).execute()
+
+
 def get_performance_config(config_dict: dict) -> None:
     """Получить конфигурацию производительности из введенных пользователем данных"""
     while True:
@@ -363,6 +371,7 @@ def create_config():
         "bonus_value_alert": "",
         "bonus_percent_alert": "",
         "alert_repeat_timeout": 0,
+        "no_db": False,
         "use_merchant_blacklist": False,
         "threads": 0,
         "delay": 1.8,
@@ -380,6 +389,7 @@ def create_config():
     get_alert_config(config_dict)
     get_proxy_config(config_dict)
     get_account_alert_config(config_dict)
+    get_db_config(config_dict)
     get_performance_config(config_dict)
     get_merchant_blacklist_config(config_dict)
 
@@ -408,6 +418,7 @@ def create_config():
             bonus_value_alert=config_dict["bonus_value_alert"],
             bonus_percent_alert=config_dict["bonus_percent_alert"],
             alert_repeat_timeout=config_dict["alert_repeat_timeout"],
+            no_db=config_dict["no_db"],
             use_merchant_blacklist=config_dict["use_merchant_blacklist"],
             threads=config_dict["threads"],
             delay=config_dict["delay"],
