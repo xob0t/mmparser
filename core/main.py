@@ -45,7 +45,7 @@ def main():
     parser.add_argument("-config", type=str, help="Путь к конфигу парсера")
     parser.add_argument("-include", type=str, help="Парсить только товары, название которых совпадает с выражением")
     parser.add_argument("-exclude", type=str, help="Пропускать товары, название которых совпадает с выражением")
-    parser.add_argument("-blacklist", type=str, help="Путь к файлу со списком игнорируемых продавцов")
+    parser.add_argument("-blacklist", type=str, help="Путь к файлу со списком имен игнорируемых продавцов")
     parser.add_argument("-all-cards", action="store_true", help="Всегда парсить карточки товаров")
     parser.add_argument("-no-cards", action="store_true", help="Не парсить карточки товаров")
     parser.add_argument("-cookies", type=str, help="Путь к файлу с cookies в формате JSON (Cookie-Editor - Export Json)")
