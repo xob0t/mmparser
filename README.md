@@ -1,6 +1,6 @@
 #
 
-```
+```text
          ____ ___  ____ ___  ____  ____  _____________  _____
         / __ `__ \/ __ `__ \/ __ \/ __ `/ ___/ ___/ _ \/ ___/
        / / / / / / / / / / / /_/ / /_/ / /  (__  )  __/ /
@@ -43,35 +43,39 @@
 
 ## Установка:
 
-1.  Установить [Python](https://www.python.org/downloads/), в установщике поставить галочку "Добавить в PATH"
-2.  [Скачать парсер](https://github.com/xob0t/mmparser/releases/latest/download/mmparser.zip)
-3.  Установить парсер: `pip install mmparser.zip -U`
+1. Установить [Python](https://www.python.org/downloads/), в установщике поставить галочку "Добавить в PATH"
+2. Установить парсер:
+
+   ```bash
+   pip install https://github.com/xob0t/mmparser/releases/latest/download/mmparser.zip -U
+   ```
 
 ## Пример использования
 
-### <span style="color:yellow">Кавычки обязательны!</span>
+> [!Warning]
+> Кавычки вокруг URL обязательны!
 
 ### Просто парсинг url
 
-```
+```bash
 mmparser "https://megamarket.ru/catalog/?q=%D0%BD%D0%BE%D1%83%D1%82%D0%B1%D1%83%D0%BA&suggestionType=frequent_query#?filters=%7B%2288C83F68482F447C9F4E401955196697%22%3A%7B%22min%22%3A229028%2C%22max%22%3A307480%7D%2C%22A03364050801C25CD0A856C734F74FE9%22%3A%5B%221%22%5D%7D&sort=1"
 ```
 
 ### Парсинг url с cookie файлом
 
-```
+```bash
 mmparser -cookies "cookies.json" "https://megamarket.ru/catalog/details/processor-amd-ryzen-5-5600-am4-oem-600008773764/"
 ```
 
 ### Без аргументов, создание конфига
 
-```
+```bash
 mmparser
 ```
 
 ### Запуск с конфигом
 
-```
+```bash
 mmparser -config "config.json"
 ```
 
@@ -87,21 +91,24 @@ mmparser -config "config.json"
 
 #
 
-```
-mmparser [-h] [-job-name JOB_NAME] [-config CONFIG] [-include INCLUDE] [-exclude EXCLUDE] [-blacklist BLACKLIST] [-all-cards] [-no-cards] [-cookies COOKIES] [-account-alert ACCOUNT_ALERT] [-address ADDRESS] [-proxy PROXY] [-proxy-list PROXY_LIST] [-allow-direct] [-tg-config TG_CONFIG] [-price-value-alert PRICE_VALUE_ALERT]
-                [-price-bonus-value-alert PRICE_BONUS_VALUE_ALERT] [-bonus-value-alert BONUS_VALUE_ALERT] [-bonus-percent-alert BONUS_PERCENT_ALERT] [-use-merchant-blacklist] [-alert-repeat-timeout ALERT_REPEAT_TIMEOUT] [-threads THREADS] [-delay DELAY] [-error-delay ERROR_DELAY] [-log-level {DEBUG,INFO,WARNING,ERROR,CRITICAL}]
+```text
+mmparser [-h] [-job-name JOB_NAME] [-config CONFIG] [-include INCLUDE] [-exclude EXCLUDE] [-blacklist BLACKLIST] [-all-cards] [-no-cards] [-cookies COOKIES] [-account-alert ACCOUNT_ALERT] [-address ADDRESS] [-proxy PROXY] [-proxy-list PROXY_LIST] [-allow-direct] [-tg-config TG_CONFIG]
+                [-price-value-alert PRICE_VALUE_ALERT] [-price-bonus-value-alert PRICE_BONUS_VALUE_ALERT] [-bonus-value-alert BONUS_VALUE_ALERT] [-bonus-percent-alert BONUS_PERCENT_ALERT] [-use-merchant-blacklist] [-alert-repeat-timeout ALERT_REPEAT_TIMEOUT] [-threads THREADS] [-delay DELAY]
+                [-error-delay ERROR_DELAY] [-log-level {DEBUG,INFO,WARNING,ERROR,CRITICAL}]
                 [url]
 
-positional arguments:
+Парсер/скрапер megamarket.ru
+
+Positional Arguments:
   url                   URL для парсинга
 
-options:
+Options:
   -h, --help            show this help message and exit
   -job-name JOB_NAME    Название задачи, без этого параметра будет автоопределено
   -config CONFIG        Путь к конфигу парсера
   -include INCLUDE      Парсить только товары, название которых совпадает с выражением
   -exclude EXCLUDE      Пропускать товары, название которых совпадает с выражением
-  -blacklist BLACKLIST  Путь к файлу со списком игнорируемых продавцов
+  -blacklist BLACKLIST  Путь к файлу со списком имен игнорируемых продавцов
   -all-cards            Всегда парсить карточки товаров
   -no-cards             Не парсить карточки товаров
   -cookies COOKIES      Путь к файлу с cookies в формате JSON (Cookie-Editor - Export Json)
