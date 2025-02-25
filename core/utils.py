@@ -139,7 +139,7 @@ def get_latest_version(package_name: str) -> str | None:
 
 
 def check_for_new_version() -> None:
-    console = Console()
+    console = Console(highlight=False)
     package_name = "mmparser"
     current_version = get_current_version(package_name)
     latest_version = get_latest_version(package_name)

@@ -7,6 +7,7 @@ from core.parser_url import Parser_url
 from core.interactive_config import create_config
 from core.utils import read_json_file, print_logo
 from .exceptions import ConfigError
+from . import utils
 
 
 def run_url_parser(args: argparse.Namespace, config: dict = {}) -> None:
@@ -68,6 +69,7 @@ def main():
     args = parser.parse_args()
 
     print_logo()
+    utils.check_for_new_version()
 
     if not args.config:
         if args.url:

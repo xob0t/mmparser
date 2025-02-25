@@ -29,5 +29,5 @@ class ParsedOffer:
 class Connection:
     def __init__(self, proxy: str | None):
         self.proxy_string: str | None = proxy
-        self.usable_at: int = 0
+        self.usable_at: float = 0
         self.busy = False
