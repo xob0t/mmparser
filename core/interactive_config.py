@@ -11,61 +11,30 @@ from InquirerPy import inquirer
 from .parser_url import Parser_url
 from . import telegram, utils, exceptions
 
-console = Console()
-
-config_dict = {
-    "url": "",
-    "job_name": "Не определено",
-    "include": "",
-    "exclude": "",
-    "blacklist": "",
-    "all_cards": False,
-    "no_cards": False,
-    "cookie_file_path": "",
-    "address": "",
-    "proxy": "",
-    "allow_direct": True,
-    "proxy_file_path": "",
-    "tg_config": "",
-    "price_value_alert": "",
-    "price_bonus_value_alert": "",
-    "bonus_value_alert": "",
-    "bonus_percent_alert": "",
-    "alert_repeat_timeout": 0,
-    "use_merchant_blacklist": False,
-    "threads": 0,
-    "delay": 1.8,
-    "error_delay": 5,
-    "account_alert": False,
-    "log_level": "INFO",
-}
+console = Console(highlight=False)
 
 
 def accent(string: str) -> str:
     return f"[bold cyan]{string}[/bold cyan]"
 
 
-def validate_url(url: str) -> bool:
+def validate_url(url: str, config_dict: dict) -> dict | None:
     """Проверка URL"""
     try:
-        if not requests.get(url).ok:
-            return False
+        if not requests.head(url).ok:
+            return
     except Exception:
-        return False
-
-    parser = Parser_url(url)
+        return
+    parser = Parser_url(url, cookie_file_path=config_dict["cookie_file_path"])
     try:
-        parsed_url = parser.parse_input_url(tries=1)
-        if parsed_url:
-            return parsed_url
-        return False
+        return parser.parse_input_url(tries=1)
     except Exception as e:
-        print(e)
+        console.print(e)
         console.print("[red]Ошибка проверки URL!")
-        return False
+        return
 
 
-def save_config_dict(config_dict: dict, name: str) -> None:
+def save_config_dict(config_dict: dict, name: str) -> str:
     """Сохранить конфиг в json"""
     try:
         file_name = f"{name}.json"
@@ -73,7 +42,7 @@ def save_config_dict(config_dict: dict, name: str) -> None:
             json.dump(config_dict, config_file, indent=4, ensure_ascii=False)
         return file_name
     except Exception as exc:
-        raise exceptions.ConfigError(f"Ошибка сохранения конфига {file_name}!") from exc
+        raise exceptions.ConfigError(f"Ошибка сохранения конфига {name}!") from exc
 
 
 def get_job_name(config_dict: dict) -> None:
@@ -83,7 +52,7 @@ def get_job_name(config_dict: dict) -> None:
         if not user_input:
             continue
         console.print("[yellow]Идет проверка url...")
-        parsed_input_url = validate_url(user_input)
+        parsed_input_url = validate_url(user_input, config_dict)
         if not parsed_input_url:
             console.print(f"[red]URL {user_input} не прошел проверку!")
             continue
@@ -191,17 +160,15 @@ def get_blacklist_config(config_dict: dict) -> None:
 def get_cookie_config(config_dict: dict) -> None:
     """Получить конфигурацию cookie из пользовательского ввода"""
     while True:
-        user_input = console.input(f"Путь к файлу с cookies в формате JSON (Cookie-Editor - Export Json) \[{accent('Пропуск')}]:")
-        if user_input == "":
-            config_dict["cookie_file_path"] = None
+        user_input = console.input("Путь к файлу с cookies в формате JSON (Cookie-Editor - Export Json):")
+        if not Path(user_input).exists():
+            console.print(f"[red]Файл {user_input} не найден")
+            continue
+        if utils.read_json_file(user_input):
+            console.print(f"[green]Файл найден: {user_input}")
+            config_dict["cookie_file_path"] = user_input
             break
-        if Path(user_input).exists():
-            if utils.read_json_file(user_input):
-                console.print(f"[green]Файл найден: {user_input}")
-                config_dict["cookie_file_path"] = user_input
-                break
-            console.print(f"[red]Ошибка чтения cookies из файла {user_input}!")
-        console.print(f"[red]Файл {user_input} не найден")
+        console.print(f"[red]Ошибка чтения cookies из файла {user_input}!")
 
 
 def get_address_config(config_dict: dict) -> None:
@@ -371,11 +338,11 @@ def create_config():
         "log_level": "INFO",
     }
 
+    get_cookie_config(config_dict)
     get_job_name(config_dict)
     get_telegram_config(config_dict)
     get_parsing_config(config_dict)
     get_blacklist_config(config_dict)
-    get_cookie_config(config_dict)
     get_address_config(config_dict)
     get_alert_config(config_dict)
     get_proxy_config(config_dict)
