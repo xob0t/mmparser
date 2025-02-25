@@ -7,3 +7,4 @@
 *.txt
 /mmparser.egg-info
 /tests/__pycache__
+/build
