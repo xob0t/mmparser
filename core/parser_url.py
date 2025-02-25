@@ -7,6 +7,7 @@ import threading
 import concurrent.futures
 import sys
 import json
+from typing import Iterable
 import signal
 from pathlib import Path
 from urllib.parse import urlparse, parse_qsl, parse_qs, unquote, urljoin
@@ -39,14 +40,14 @@ class Parser_url:
         use_merchant_blacklist: bool = False,
         proxy_file_path: str = "",
         tg_config: str = "",
-        price_value_alert: float = None,
-        price_bonus_value_alert: float = None,
-        bonus_value_alert: float = None,
-        bonus_percent_alert: float = None,
-        alert_repeat_timeout: float = None,
-        threads: int = None,
-        delay: float = None,
-        error_delay: float = None,
+        price_value_alert: float | None = None,
+        price_bonus_value_alert: float | None = None,
+        bonus_value_alert: float | None = None,
+        bonus_percent_alert: float | None = None,
+        alert_repeat_timeout: float | None = None,
+        threads: int | None = None,
+        delay: float | None = None,
+        error_delay: float | None = None,
         log_level: str = "INFO",
     ):
         self.cookie_file_path = cookie_file_path
@@ -58,19 +59,19 @@ class Parser_url:
         self.connection_error_delay = error_delay or 10.0
         self.log_level = log_level
 
-        self.start_time: datetime = None
+        self.start_time: datetime | None = None
 
         self.region_id = "50"
-        self.session = None
+
         self.connections: list[Connection] = []
         self.parsed_proxies: set | None = None
-        self.cookie_dict: dict = None
+        self.cookie_dict: dict | None = None
         self.profile: dict = {}
         self.rich_progress = None
         self.job_name: str = ""
 
         self.logger: logging.Logger = self._create_logger(self.log_level)
-        self.tg_client: TelegramClient = None
+        self.tg_client: TelegramClient | None = None
 
         self.url: str = url
         self.job_name: str = job_name
@@ -83,7 +84,7 @@ class Parser_url:
         self.proxy: str = proxy
         self.account_alert: bool = account_alert
         self.use_merchant_blacklist: bool = use_merchant_blacklist
-        self.merchant_blacklist: list = utils.load_blacklist() if use_merchant_blacklist else []
+        self.merchant_blacklist: Iterable[str] = utils.load_blacklist() if use_merchant_blacklist else [""]
         self.price_value_alert: float = price_value_alert or float("-inf")
         self.price_bonus_value_alert: float = price_bonus_value_alert or float("-inf")
         self.bonus_value_alert: float = bonus_value_alert or float("inf")
@@ -99,8 +100,15 @@ class Parser_url:
 
         self.address_id: str = None
         self.lock = threading.Lock()
-
         self._set_up()
+        self.session = self._new_session()
+
+    def _new_session(self) -> requests.Session:
+        """Создание новой сессии"""
+        session = requests.Session(impersonate="chrome")
+        session.cookies.update(self.cookie_dict)
+        session.cookies["adult_disclaimer_confirmed"] = "1"
+        return session
 
     def _create_logger(self, log_level: str) -> logging.Logger:
         logging.basicConfig(
@@ -129,7 +137,7 @@ class Parser_url:
         elif not self.connections:
             self.connections = [Connection(None)]
 
-    def _get_connection(self) -> str:
+    def _get_connection(self) -> Connection:
         """Получить самое позднее использованное `Соединение`"""
         while True:
             free_proxies = [proxy for proxy in self.connections if not proxy.busy]
@@ -144,19 +152,19 @@ class Parser_url:
             sleep(1)
 
     def _api_request(self, api_url: str, json_data: dict, tries: int = 10, delay: float = 0) -> dict:
+        json_data["addressId"] = ""
         json_data["auth"] = {
             "locationId": self.region_id,
             "appPlatform": "WEB",
-            "appVersion": 1710405202,
-            "experiments": {},
+            "appVersion": 0,
             "os": "UNKNOWN_OS",
         }
         for i in range(0, tries):
-            proxy: Connection = self._get_connection()
+            proxy = self._get_connection()
             proxy.busy = True
             self.logger.debug("Прокси : %s", proxy.proxy_string)
             try:
-                response = requests.post(api_url, json=json_data, proxy=proxy.proxy_string, verify=False, impersonate="chrome120")
+                response = self.session.post(api_url, json=json_data, proxy=proxy.proxy_string, verify=False)
                 response_data: dict = response.json()
             except Exception:
                 response = None
@@ -179,7 +187,7 @@ class Parser_url:
         self.profile = response_json["profile"]
 
     def _set_up(self) -> None:
-        """Парсинг в валидация конфигурации"""
+        """Парсинг и валидация конфигурации"""
         if self.tg_config:
             if not validate_tg_credentials(self.tg_config):
                 raise ConfigError(f"Конфиг {self.tg_config} не прошел проверку!")
@@ -205,7 +213,6 @@ class Parser_url:
 
     def parse(self) -> None:
         """Метод запуска парсинга"""
-        utils.check_for_new_version()
         self.start_time = datetime.now()
         self.logger.info("Целевой URL: %s", self.url)
         self.logger.info("Потоков: %s", self.threads)
